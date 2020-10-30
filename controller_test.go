@@ -19,9 +19,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/astaxie/beego/context"
 	"os"
 	"path/filepath"
+
+	"github.com/astaxie/beego/context"
 )
 
 func TestGetInt(t *testing.T) {
@@ -125,8 +126,8 @@ func TestGetUint64(t *testing.T) {
 }
 
 func TestAdditionalViewPaths(t *testing.T) {
-	dir1 := "_beeTmp"
-	dir2 := "_beeTmp2"
+	dir1 := tmpDir("TestAdditionalViewPaths1")
+	dir2 := tmpDir("TestAdditionalViewPaths2")
 	defer os.RemoveAll(dir1)
 	defer os.RemoveAll(dir2)
 

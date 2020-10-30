@@ -769,6 +769,20 @@ func TestCustomField(t *testing.T) {
 
 	throwFailNow(t, AssertIs(user.Extra.Name, "beego"))
 	throwFailNow(t, AssertIs(user.Extra.Data, "orm"))
+
+	var users []User
+	Q := dDbBaser.TableQuote()
+	n, err := dORM.Raw(fmt.Sprintf("SELECT * FROM %suser%s where id=?", Q, Q), 2).QueryRows(&users)
+	throwFailNow(t, err)
+	throwFailNow(t, AssertIs(n, 1))
+	throwFailNow(t, AssertIs(users[0].Extra.Name, "beego"))
+	throwFailNow(t, AssertIs(users[0].Extra.Data, "orm"))
+
+	user = User{}
+	err = dORM.Raw(fmt.Sprintf("SELECT * FROM %suser%s where id=?", Q, Q), 2).QueryRow(&user)
+	throwFailNow(t, err)
+	throwFailNow(t, AssertIs(user.Extra.Name, "beego"))
+	throwFailNow(t, AssertIs(user.Extra.Data, "orm"))
 }
 
 func TestExpr(t *testing.T) {
@@ -807,6 +821,17 @@ func TestOperators(t *testing.T) {
 	num, err = qs.Filter("user_name__iexact", "Slene").Count()
 	throwFail(t, err)
 	throwFail(t, AssertIs(num, 1))
+
+	if IsMysql {
+		// Now only mysql support `strictexact`
+		num, err = qs.Filter("user_name__strictexact", "Slene").Count()
+		throwFail(t, err)
+		throwFail(t, AssertIs(num, 0))
+
+		num, err = qs.Filter("user_name__strictexact", "slene").Count()
+		throwFail(t, err)
+		throwFail(t, AssertIs(num, 1))
+	}
 
 	num, err = qs.Filter("user_name__contains", "e").Count()
 	throwFail(t, err)

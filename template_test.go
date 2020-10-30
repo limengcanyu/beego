@@ -16,12 +16,13 @@ package beego
 
 import (
 	"bytes"
-	"github.com/astaxie/beego/testdata"
-	"github.com/elazarl/go-bindata-assetfs"
 	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/astaxie/beego/testdata"
+	"github.com/elazarl/go-bindata-assetfs"
 )
 
 var header = `{{define "header"}}
@@ -45,8 +46,12 @@ var block = `{{define "block"}}
 <h1>Hello, blocks!</h1>
 {{end}}`
 
+func tmpDir(s string) string {
+	return filepath.Join(os.TempDir(), s)
+}
+
 func TestTemplate(t *testing.T) {
-	dir := "_beeTmp"
+	dir := tmpDir("TestTemplate")
 	files := []string{
 		"header.tpl",
 		"index.tpl",
@@ -107,7 +112,7 @@ var user = `<!DOCTYPE html>
 `
 
 func TestRelativeTemplate(t *testing.T) {
-	dir := "_beeTmp"
+	dir := tmpDir("TestRelativeTemplate")
 
 	//Just add dir to known viewPaths
 	if err := AddViewPath(dir); err != nil {
@@ -218,7 +223,7 @@ var output = `<!DOCTYPE html>
 `
 
 func TestTemplateLayout(t *testing.T) {
-	dir := "_beeTmp"
+	dir := tmpDir("TestTemplateLayout")
 	files := []string{
 		"add.tpl",
 		"layout_blog.tpl",
